@@ -1,16 +1,16 @@
 Nesse tutorial vamos criar um jogo antigo de pong.... 
 
 # Indice
-[Basico](#basico)\n
-[Classe player](#Classe-player)\n
-[Classe bola](#classe-bola)\n
-[Limites](#limites)\n
-[Colissão](#colissão)\n
-[Ia oponente](#ia-oponente)\n
-[Direção aleatoria](#direção-aleatoria)\n
-[Score](#score)\n
-[Reset game](#reset-game)\n
-[font e placar](#font-e-placar)\n
+* [Basico](#basico)
+* [Classe player](#Classe-player)
+* [Classe bola](#classe-bola)
+* [Limites](#limites)
+* [Colissão](#colissão)
+* [Ia oponente](#ia-oponente)
+* [Direção aleatoria](#direção-aleatoria)
+* [Score](#score)
+* [Reset game](#reset-game)
+* [font e placar](#font-e-placar)
 
 
 
