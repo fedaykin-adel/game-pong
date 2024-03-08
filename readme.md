@@ -9,7 +9,7 @@ Para começar vamos criar a estrutura usando pygame, para biaxar o pygame o coma
 # Basico #
 a estrutura simplificada da tela do jogo sera esta: 
 
-```Main
+```python
     import pygame 
     import sys
     #inicia o pygame
@@ -75,7 +75,7 @@ Agora cirar algumas funções dentro da classe player, elas serão responsaveis 
 
 Bom.. vamos começar por desenhar o personagem, para o desenho vou utilizar a função draw do pygame que ficaria assim 
 
-```player
+```python
     def draw(self):
         pygame.draw.rect(screen,self.color,self.rect)
 ```
@@ -84,7 +84,7 @@ Para desenhar, temos que passar para a função draw.rect a tela (screen) que de
 
 para implementar o movimento, vamos ter algo assim
 
-```player
+```python
     def update(self):
         
         self.rect.centery += self.ry
@@ -99,7 +99,7 @@ Para implementar a logica de movimento, estou atualizando a posição centery do
 
 # Inicio da classe Bola
 
-```bola
+```python
     class Ball():
         def __init__(self, x,y,radius):
             self.radius = radius
@@ -117,7 +117,7 @@ Para implementar a logica de movimento, estou atualizando a posição centery do
 Alguns pontos importantes aqui... diferente do player que a velocidade inicial e 0, na bola eu ja setei ela com uma velocidade inicial de 7 pixels. Tambem estou criando um rect para a bola por que facilita na hora de aplicar a logida de movimento e do desenho, em uma situação normal ao criar um rect para a esfera ela ficaria dentro da bola, mas para facilitar a minha vida estou criando o retangulo por fora da esfera multiplicando o raio dela por 2.
 
 agora, na logica do desenho e da atualização, temos algo com isso.
-```bola
+```python
     def draw(self):
         pygame.draw.circle(screen, self.color, (self.rect.centerx, self.rect.centery), self.radius)
     def update(self):
@@ -135,7 +135,7 @@ Para desenhar a bola, estou usando a função draw.circle passando o parametro d
 
 com isso podemos declarar as classes bola, personagem e inimigo. 
 
-```main
+```python
     ...codigo anterior...
     pygame.display.set_caption('ping pong')
     class Player():
@@ -183,7 +183,7 @@ Bom... declarei antes do meu loop principal e logo em seguida das classes. Come�
 agora, juntando tudo no nosso loop principal, teremos algo como isso
 
 
-```main
+```python
     ...codigo anteriro
     run = True
     while run:
@@ -219,7 +219,7 @@ tambem adicionei o movimento do jogador no nosso motor de renderização, para i
 
 pronto, agora se voce iniciar o jogo apenas com isso, tudo o que voce vera sera uma tela preta... por que? Como estamos lidando com um loop infinito ele percorre e renderiza muito rapido, então vamos adicionar um relogio que controla-ra a quantidade de quadros por segundo (fps) que seram exibidos junto com a função de atualização do pygame o flip, isso tudo dentro do nosso loop principal, o codigo fica assim... 
 
-```main
+```python
     ...codigo anteriro
     run = True
     while run:
@@ -254,7 +254,7 @@ pronto, agora se voce iniciar o jogo apenas com isso, tudo o que voce vera sera 
 ```
 Se executarmos o codigo agora, notaremos que os objetos estão se movendo mas com outro erro, ele acontece por que não estamos limpando a tela a cada frame então o computador apenas copia e coloca o objeto para a nova posição mas permanece com a posição antiga, para arrumar isso e simples, basta acidionar essa linha antes da detecção de tecla. 
 
-```main
+```python
     screen.fill((0,0,0))
 
     key = pygame.key.get_pressed()
@@ -274,7 +274,7 @@ Certo, agora nos temos um jogo quase funcional, mas se voce reparar o jogador es
 Para começar o limite, precisamos entender um pouco da regra do jogo pong original.
 Na versão original as areas do top e do chão são considerados como "parede" e nada passa por cima ou por baixo, para isso vamos implementar na nossa classe do jogador e da bola os limites da tela.
 Vamos começar pelo jogador
-```player
+```python
     def limit(self):
         #aqui estamos prevendo a proxima posição antes de atualizar o jogo
         if self.rect.top + self.ry < 0:
@@ -284,7 +284,7 @@ Vamos começar pelo jogador
 ```
 O limite e simples... caso o topo do jogagor mais o controle de posição ry for mais do que 0, ele posiciona o jogador como 0 + topo do jogador, ja para o limite inferior e a mesma logica, se a area de baixo do jogador passar o tamanho da altura da tela, ele define a posição como o limite da altura da tela menos a area de baixo do jogador, vamos aplicar uma logica semelhate para a bola. 
 Na classe da bola, vamos adicionar o limite
-```bola
+```python
     def limit(self):
         if self.rect.top <= 0 or self.rect.bottom >= size[1]:
             self.speed_y *= -1
@@ -292,13 +292,13 @@ Na classe da bola, vamos adicionar o limite
 
 A logica do limite da bola para não atravessar o topo ou o fundo da tela e mais simples, so precisamos adicionar o limite do topo da bola com o limite maior ou igual que zero que e no fundo, a base da bola seja menor do que o tamanho da altura da tela, quando atingir qualquer um dos limites ele inverte a velocidade fazendo a bola ir para o lado contrario, desse jeito temos a logica de limite implementado para ambas as classes. vamos implementar o limite nas respectivas classes update, limite do player na classe update player e a bola no update bola 
 
-```player
+```python
     def update(self):
         self.limit()
         self.rect.centery += self.ry
 ```
 
-```bola
+```python
     def update(self):
         rx = 0
         ry = 0
@@ -313,7 +313,7 @@ A logica do limite da bola para não atravessar o topo ou o fundo da tela e mais
 # Colissão
 Bom, chegou a parte da colisao entre objetos, para isso vou utilizar colliderect do pygame, a implementação e simples, e basicamente funciona assim, usando o rect do personagem vou aplicando a colisao com o objeto da bola, que retorna um booleano, logo so precisamos colocar em dentro de um if e quando ocorrer a colissão revertemos a direção da bola.
 
-```player
+```python
     def collide(self,ball):
         if self.rect.colliderect(ball):
             if abs(self.rect.right - ball.rect.left) < ball.radius or abs(self.rect.left - ball.rect.right) < ball.radius:
@@ -321,13 +321,13 @@ Bom, chegou a parte da colisao entre objetos, para isso vou utilizar colliderect
 ```
 basta implementar a função do update player passando a bola como paramentro, tambem precisamos passar a bola no update do personagem e no inimigo no loop principal. 
 
-``` player
+```python
     def update(self,ball):
         self.limit()
         self.collide(ball)
         self.rect.centery += self.ry
 ```
-```main 
+```python 
     key = pygame.key.get_pressed()
     if key[pygame.K_w]:
         player.move_top()
@@ -364,7 +364,7 @@ Agora vamos criar a logica do oponente, basicamente vamos pegar o topo e o fundo
 ```
 depois so precisamos declarar a função no nosso loop principal passando a bola com oparametro 
 
-```main
+```python
     key = pygame.key.get_pressed()
     if key[pygame.K_w]:
         player.move_top()
@@ -385,7 +385,7 @@ depois so precisamos declarar a função no nosso loop principal passando a bola
 # Direção da bola inicial aleatorio
 Temos um jogo funcional agora :3 mas vamos fazer algumas pequenas modificacoes para adicionar algumas coisas, vamos começar coma a direção aleatoria da bola no inicio do jogo. importando a biblioteca random, vamos fazer uma logica que quando o jogo e iniciado ele escolha randomicamente a direção que a bola vai seguir, para o player ou para o inimigo. 
 
-```
+```python
     import random
     class Ball():
         def __init__(self, x,y,radius):
@@ -402,7 +402,7 @@ Temos um jogo funcional agora :3 mas vamos fazer algumas pequenas modificacoes p
 # Score
 Para o sistema de pontos vamos entender a regra do jogo de novo, caso a bola passe a linha de visao do jogador, o ponto e do adversario, caso a bola passe pelo adversaio o ponto e do jogador, simples e rapido, podemos escrever algo assim. e para não perder muito tempo junto com o score, vou adcionar um booleano que ficara responsavel por resetar a partida toda vez que alguem fizer um ponto.
 
-``` bola
+```python
     class Ball():
         def __init__(self, x,y,radius):
             ...inits anteriores...
@@ -434,7 +434,7 @@ Para o sistema de pontos vamos entender a regra do jogo de novo, caso a bola pas
 ```
 Adicionei um booleano, add_score, que ficara responsavel por dispara o score aprenas uma vez, como estamos chamando ele na função update e caso não tivesse essa variavel o contador de pontos iria a loucura, e no nosso loop principal, so precisamos passar em ball.update as variaveis player e enemie
 
-```
+```python
     key = pygame.key.get_pressed()
     if key[pygame.K_w]:
         player.move_top()
@@ -454,7 +454,7 @@ Adicionei um booleano, add_score, que ficara responsavel por dispara o score apr
 ```
 Tambem e preciso adicionar score ao player. 
 
-```
+```python
     class Player():
         def __init__(self,x,y,width,height, speed):
             self.rect = pygame.rect.Rect(x,y,width,height)
@@ -467,7 +467,7 @@ Tambem e preciso adicionar score ao player.
 # Reset game
 A logica para resetar o jogo e simples e vamos adicionar na nossa classe bola 
 
-```
+```python
     def reset(self):
         if self.done:
             self.rect.center = self.x,self.y
@@ -479,7 +479,7 @@ A logica para resetar o jogo e simples e vamos adicionar na nossa classe bola
 Caso o done retorne um true, ele define a posição inicial de volta para o centro, seto o add_score para true para voltar a contar os pontos, e defino um novo angulo para a bola com speed random -1,1, tambem precisamos setar o done para false. feito isso e so implementar no nosso loop principal e taram, um jogo que numca acaba. 
 
 
-```main 
+```python 
     key = pygame.key.get_pressed()
     if key[pygame.K_w]:
         player.move_top()
@@ -508,7 +508,7 @@ Caso o done retorne um true, ele define a posição inicial de volta para o cent
 # font e placar
 Mas... onde está o placar? bom... para isso vamos precisar implementar uma font no pygame, para isso vamos fazer algumas modificalções, para simplificar vou implementar essa parte toda de uma vez e depois explicar.
 
-```
+```python
     pygame.init()
     pygame.font.init()
 
@@ -530,12 +530,12 @@ Mas... onde está o placar? bom... para isso vamos precisar implementar uma font
 ```
 Para implementar a fonte, precisando usar a classe font do pygame e passar o tipo de font que quer usar e o tamanho, no meu caso vou usar a fonte padram, mas caso queira usar outra fonte e so baixar o arquivo e insesir aqui 
 
-``` 
+```python 
     self.font = pygame.font.Font(...fonte aqui..., 25)
 ```
 depois disso precisamos renderizar o que queremos que seja escrito na tela, e a cor, logo em seguida nos posicionamos onde queremos e blitamos na tela.
 
-```main 
+```python 
     key = pygame.key.get_pressed()
     if key[pygame.K_w]:
         player.move_top()
