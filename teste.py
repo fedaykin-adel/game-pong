@@ -18,7 +18,7 @@ class Player():
         self.rect.center = x,y
         self.speed = speed
         self.color = (150,150,150)
-        self.ry = 0
+        self.dy = 0
         self.score = 0
         self.color_text = (255,255,255)
         self.font = pygame.font.Font(None, 25)
@@ -31,34 +31,33 @@ class Player():
     def update(self,ball):
         self.limit()
         self.collide(ball)
-        self.rect.centery += self.ry
+        self.rect.centery += self.dy
     def move_top(self):
-        self.ry = -self.speed
+        self.dy = -self.speed
     def move_down(self):
-        self.ry = self.speed
+        self.dy = self.speed
     def stop(self):
-        self.ry = 0
+        self.dy = 0
     def limit(self):
-        if self.rect.top + self.ry < 0:
-            self.ry = 0 + self.rect.top
-        if self.rect.bottom + self.ry > size[1]:
-            self.ry = size[1] - self.rect.bottom
+        if self.rect.top + self.dy < 0:
+            self.dy = self.rect.top
+        if self.rect.bottom + self.dy > size[1]:
+            self.dy = size[1] - self.rect.bottom
     def stop(self):
-        self.ry = 0    
+        self.dy = 0    
     def collide(self,ball):
         if self.rect.colliderect(ball):
             if abs(self.rect.right - ball.rect.left) < ball.radius or abs(self.rect.left - ball.rect.right) < ball.radius:
                 ball.speed_x *= -1
             
-        # if abs(self.rect.bottom - ball.rect.top) < ball.radius or abs(self.rect.top - ball.rect.bottom) < ball.radius:
-        #     ball.speed_y *= -1
+        
     def oponente_ia(self,ball):
         
         if self.rect.centery < ball.rect.y:
             self.rect.centery += self.speed
         if self.rect.centery > ball.rect.y:
             self.rect.centery -= self.speed
-
+        
         if self.rect.top <=0:
             self.rect.top= 0
         if self.rect.bottom >= size[1]:
@@ -100,11 +99,11 @@ class Ball():
             self.speed_x = 7 * random.choice((-1,1))
             self.speed_y = 7 * random.choice((-1,1))
             self.done = False
-    def update(self,player, enemie):
+    def update(self):
         rx = 0
         ry = 0
 
-        self.score(player, enemie)
+        
         self.limit()
         
         rx = self.speed_x
@@ -159,6 +158,9 @@ while run:
     else:
         player.stop()
     
+    #adiciona score quando houver ponto
+    ball.score(player, enemie)
+    
     #ai enemie
     enemie.oponente_ia(ball)
     
@@ -168,7 +170,7 @@ while run:
     #update 
     player.update(ball)
     enemie.update(ball)
-    ball.update(player,enemie)
+    ball.update()
 
     #draw
     player.draw()
