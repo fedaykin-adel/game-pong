@@ -5,7 +5,16 @@ Para começar vamos criar a estrutura usando pygame, para biaxar o pygame o coma
 ```python
     pip install pygame
 ```
+[Basico](#basico)
+[Classe player](#Classe-player)
+[Classe bola](#classe-bola)
 [Limites](#limites)
+[Colissão](#colissão)
+[Ia oponente](#ia-oponente)
+[Direção aleatoria](#direção-aleatoria)
+[Score](#score)
+[Reset game](#reset-game)
+[font e placar](#font-e-placar)
 # Basico #
 a estrutura simplificada da tela do jogo sera esta: 
 
@@ -36,7 +45,7 @@ a estrutura simplificada da tela do jogo sera esta:
     sys.exit()
 ```
 
-# Inicio classe player
+# Classe player
 Em seguida vamos criar o nosso player, para criar o player eu criei uma classe chamada player para ficar mais organizado, tambem criei uma classe para a bola mas por enquanto vamos focar no player. 
 Para o player vou cirar uma classe passando posição x,y, algura, largura e velocidade, nada muito complicado. Tambem vou centarlizar o retangulo com rect.center 
 
@@ -97,7 +106,7 @@ para implementar o movimento, vamos ter algo assim
 ```
 Para implementar a logica de movimento, estou atualizando a posição centery do rect do player, para movimentar para cima estou negativando a variavel speed e para o movimento para baixo estou apenas passando a velocidade, como eu estou lidando com atualizaçao constante fui obrigado a implementar uma função chamada stop que define o controlador de eixo ry como 0. 
 
-# Inicio da classe Bola
+# Classe bola
 
 ```python
     class Ball():
@@ -270,7 +279,7 @@ Basicamente a cada freme ele preenche a tela com a cor preta apagando o ultimo e
 
 Certo, agora nos temos um jogo quase funcional, mas se voce reparar o jogador esta atravessando a area visivel da tela e a bola a mesma coisa, para isso iremos implementar alguns limites e colisões. 
 
-# limites #
+# limites
 Para começar o limite, precisamos entender um pouco da regra do jogo pong original.
 Na versão original as areas do top e do chão são considerados como "parede" e nada passa por cima ou por baixo, para isso vamos implementar na nossa classe do jogador e da bola os limites da tela.
 Vamos começar pelo jogador
@@ -382,7 +391,7 @@ depois so precisamos declarar a função no nosso loop principal passando a bola
     ball.update()
 ```
 
-# Direção da bola inicial aleatorio
+# Direção aleatoria
 Temos um jogo funcional agora :3 mas vamos fazer algumas pequenas modificacoes para adicionar algumas coisas, vamos começar coma a direção aleatoria da bola no inicio do jogo. importando a biblioteca random, vamos fazer uma logica que quando o jogo e iniciado ele escolha randomicamente a direção que a bola vai seguir, para o player ou para o inimigo. 
 
 ```python
