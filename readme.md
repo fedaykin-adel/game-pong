@@ -3,6 +3,8 @@
 * [Básico](#básico)
 * [Classe player](#Classe-player)
 * [Classe bola](#classe-bola)
+* [Juntando tudo](#juntando-tudo)
+* [Corrigindo erro na lógica principal](#corrigindo-erro-na-lógica-principal)
 * [Limites](#limites)
 * [Colisão](#colisão)
 * [Ia oponente](#ia-oponente)
@@ -149,6 +151,8 @@ Na lógica do desenho e da atualização, temos algo com isso.
 Para desenhar a bola, estou usando a função draw.circle passando o parâmetro da posição separado de x e y e o parâmetro do raio do círculo. 
 Para a atualização da bola estou definindo dx e dy como estado inicial 0 e em seguida atribuindo o valor da velocidade no respectivo eixo, depois movendo o centro da bola x e y com o controlador de posição dx e dy.
 
+# Juntando tudo
+
 Com isso podemos instanciar as classes bola, personagem e inimigo antes do nosso loop principal, dessa forma a classe é carregada apenas uma vez. 
 
 ```python
@@ -195,7 +199,7 @@ Com isso podemos instanciar as classes bola, personagem e inimigo antes do nosso
     
 ```
 
- Detalhando um pouco, na classe da bola, eu setei a posição x e y no centro da tela e declarei o raio da esfera como 15, enquanto o jogador eu setei no eixo x 25 pixels para a direita e centralizado no eixo y, fiz a mesma coisa com o jogador adversário espelhando para o lado direito da tela, como o tamanho do jogador e do inimigo são os mesmos, criei o mesmo parâmetro para os dois. 
+Detalhando um pouco, na classe da bola, eu setei a posição x e y no centro da tela e declarei o raio da esfera como 15, enquanto o jogador eu setei no eixo x 25 pixels para a direita e centralizado no eixo y, fiz a mesma coisa com o jogador adversário espelhando para o lado direito da tela, como o tamanho do jogador e do inimigo são os mesmos, criei o mesmo parâmetro para os dois. 
 
 agora, juntando tudo no nosso loop principal, teremos algo como isso
 
@@ -234,6 +238,7 @@ agora, juntando tudo no nosso loop principal, teremos algo como isso
 ```
 Adicionei o movimento do jogador no nosso motor de renderização, para isso usei a função get_pressed do pygame para detectar a tecla pressionada e mover de acordo com o que queremos. Logo em seguida eu defino os updates e os desenhos necessários.
 
+# Corrigindo erro na lógica principal
 Pronto... agora, se você iniciar o jogo apenas com isso, tudo o que verá é uma tela preta... por que? Como estamos lidando com um loop infinito ele percorre e renderiza muito rápido, então vamos adicionar um relógio que será o controle da quantidade de quadros por segundo (fps) que serão exibidos junto com a função de atualização do pygame, a função flip, isso tudo dentro do nosso loop principal, o código fica assim... 
 
 ```python
