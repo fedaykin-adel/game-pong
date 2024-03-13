@@ -1,12 +1,12 @@
 
-# Indice
-* [Basico](#básico)
+# Índice
+* [Básico](#básico)
 * [Classe player](#Classe-player)
 * [Classe bola](#classe-bola)
 * [Limites](#limites)
-* [Colissão](#colissão)
+* [Colisão](#colisão)
 * [Ia oponente](#ia-oponente)
-* [Direção aleatoria](#direção-aleatória)
+* [Direção aleatória](#direção-aleatória)
 * [Score](#score)
 * [Reset game](#reset-game)
 * [font e placar](#font-e-placar)
@@ -65,7 +65,7 @@ Para o player vou criar uma classe passando posição x,y, altura, largura e vel
 ```
 Como só vamos mover o personagem para cima e para baixo, vou criar apenas um controlador de eixo, no caso estou criando o dy (leia delta y).
 
-Para cirar algumas funções dentro da classe player, elas serão responsáveis por desenhar, mover e atualizar o personagem. 
+Vamos criar algumas funções dentro da classe player, elas serão responsáveis por desenhar, mover e atualizar o personagem. 
 
 ```python
     class Player():
@@ -87,7 +87,7 @@ Para cirar algumas funções dentro da classe player, elas serão responsáveis 
             pass    
 ```
 
-Começando pelo desenho do personagem, vou utilizar a função draw do pygame.
+Começando pelo desenho do personagem, vou utilizar a função draw rect do pygame.
 
 ```python
     def draw(self):
@@ -119,6 +119,7 @@ Para implementar a lógica de movimento, estou atualizando a posição centery d
             self.radius = radius
             self.x = x
             self.y = y
+            #cria o retângulo fora do circulo 
             self.rect = pygame.rect.Rect(self.x - self.radius,self.y- self.radius, 2 * self.radius,2 * self.radius)
             self.speed_y = 7
             self.speed_x = 7
@@ -145,10 +146,10 @@ Na lógica do desenho e da atualização, temos algo com isso.
         self.rect.centery += dy
 ```
 
-Para desenhar a bola, estou usando a função draw.circle passando o parâmetro da posição separado de x e y e o parâmetro do raio do circulo. 
+Para desenhar a bola, estou usando a função draw.circle passando o parâmetro da posição separado de x e y e o parâmetro do raio do círculo. 
 Para a atualização da bola estou definindo dx e dy como estado inicial 0 e em seguida atribuindo o valor da velocidade no respectivo eixo, depois movendo o centro da bola x e y com o controlador de posição dx e dy.
 
-Com isso podemos instanciar as classes bola, personagem e inimigo antes do nosso loop principal, dessa forma a classe e carregada apenas uma vez. 
+Com isso podemos instanciar as classes bola, personagem e inimigo antes do nosso loop principal, dessa forma a classe é carregada apenas uma vez. 
 
 ```python
     ...código anterior...
@@ -168,7 +169,7 @@ Com isso podemos instanciar as classes bola, personagem e inimigo antes do nosso
     ball = Ball(centerx,centery, radius)
         
     # tamanho do player e do inimigo e a velocidade de ambos
-    width = 25
+    width = 15
     height = 200
     speed = 10
 
@@ -184,7 +185,7 @@ Com isso podemos instanciar as classes bola, personagem e inimigo antes do nosso
     y = size[1] // 2
     
     #classe do adversário
-    enemie = Player(x,y,width,height,speed)
+    enemy = Player(x,y,width,height,speed)
 
 
     #motor de renderização
@@ -222,18 +223,18 @@ agora, juntando tudo no nosso loop principal, teremos algo como isso
 
         #update 
         player.update()
-        enemie.update()
+        enemy.update()
         ball.update()
 
         #draw
         player.draw()
-        enemie.draw()
+        enemy.draw()
         ball.draw()
 
 ```
 Adicionei o movimento do jogador no nosso motor de renderização, para isso usei a função get_pressed do pygame para detectar a tecla pressionada e mover de acordo com o que queremos. Logo em seguida eu defino os updates e os desenhos necessários.
 
-Pronto... agora, se você iniciar o jogo apenas com isso, tudo o que verá e uma tela preta... por que? Como estamos lidando com um loop infinito ele percorre e renderiza muito rápido, então vamos adicionar um relógio que sera o controle da quantidade de quadros por segundo (fps) que serão exibidos junto com a função de atualização do pygame, a função flip, isso tudo dentro do nosso loop principal, o código fica assim... 
+Pronto... agora, se você iniciar o jogo apenas com isso, tudo o que verá é uma tela preta... por que? Como estamos lidando com um loop infinito ele percorre e renderiza muito rápido, então vamos adicionar um relógio que será o controle da quantidade de quadros por segundo (fps) que serão exibidos junto com a função de atualização do pygame, a função flip, isso tudo dentro do nosso loop principal, o código fica assim... 
 
 ```python
     ...código anterior...
@@ -255,12 +256,12 @@ Pronto... agora, se você iniciar o jogo apenas com isso, tudo o que verá e uma
 
         #update 
         player.update()
-        enemie.update()
+        enemy.update()
         ball.update()
 
         #draw
         player.draw()
-        enemie.draw()
+        enemy.draw()
         ball.draw()
         
         #relógio para controle de fps
@@ -271,8 +272,10 @@ Pronto... agora, se você iniciar o jogo apenas com isso, tudo o que verá e uma
 Se executarmos o código agora, você notará que os objetos estão se movendo mas com outro erro, ele acontece por que não estamos limpando a tela a cada frame então o computador apenas copia e coloca o objeto para a nova posição mas permanece com a posição antiga, para arrumar isso é simples, basta adicionar a função fill que irá preencher a tela de preto a cada ciclo. 
 
 ```python
+    #preenche a tela a cada quadro
     screen.fill((0,0,0))
 
+    #detecta tecla pressionada
     key = pygame.key.get_pressed()
     if key[pygame.K_w]:
         player.move_top()
@@ -309,34 +312,39 @@ Na classe da bola, vamos adicionar o limite
 A lógica do limite da bola é mais simples, só precisamos verificar se a parte superior da esfera for menor que zero ou a parte inferior for maior do que o tamanho da tela ele inverte a velocidade, fazendo a bola ir para o lado contrário. Com as funções construídas, só precisamos adicionar a função do limite nos respectivos updates, segue o exemplo
 
 ```python
-    #limite da classe player
     def update(self):
+        #limite da classe player
         self.limit()
+
         self.rect.centery += self.ry
 ```
 
 ```python
-    #limite da classe bola
+    
     def update(self):
-        rx = 0
-        ry = 0
+        dx = 0
+        dy = 0
 
+        #limite da classe bola
         self.limit()
-        rx = self.speed_x
-        ry = self.speed_y
 
-        self.rect.centerx += rx 
-        self.rect.centery += ry
+        dx = self.speed_x
+        dy = self.speed_y
+
+        self.rect.centerx += dx 
+        self.rect.centery += dy
 ```
 
 # Colissão
 
-Bom, chegou a parte da colisão entre objetos, para isso vou utilizar colliderect do pygame, a implementação e simples, e funciona assim, usando o rect do personagem vou aplicando a colisão com o objeto da bola, que retorna um booleano, logo só precisamos colocar em dentro de um if e quando ocorrer a colisão revertemos a direção da bola, desta vez no eixo x.
+Bom, chegou a parte da colisão entre objetos, para isso vou utilizar colliderect do pygame. A implementação é simples, e funciona assim: usando o rect do personagem vou aplicando a colisão com o objeto da bola, que retorna um booleano, logo só precisamos colocar em dentro de um if e quando ocorrer a colisão revertemos a direção da bola, desta vez no eixo x.
 
 ```python
     #função da colisão do player
     def collide(self,ball):
+        #detecta colisão
         if self.rect.colliderect(ball):
+            #define o lado direito do jogador para colisão           #define o lado esquedo do inimido para colisão
             if abs(self.rect.right - ball.rect.left) < ball.radius or abs(self.rect.left - ball.rect.right) < ball.radius:
                 ball.speed_x *= -1
 ```
@@ -345,7 +353,10 @@ Agora basta implementar a função no update player passando o objeto da bola co
 ```python
     #update player
     def update(self,ball):
+        #limite do movimento do player
         self.limit()
+        
+        #detecta colisão do player ou inimigo com a bola
         self.collide(ball)
         self.rect.centery += self.ry
 ```
@@ -360,12 +371,12 @@ Agora basta implementar a função no update player passando o objeto da bola co
     
     #update passando a bola como parâmetro para inimigo e o personagem
     player.update(ball)
-    enemie.update(ball)
+    enemy.update(ball)
     ball.update()
 
     #draw
     player.draw()
-    enemie.draw()
+    enemy.draw()
     ball.draw()      
 ```
 Como estamos fazendo tudo no mesmo arquivo, eu não precisaria passar como parâmetro no player.update a bola, mas estou fazendo isso para ficar mais organizado caso você decida separar as classes player e a bola em outro arquivo.
@@ -375,7 +386,7 @@ Como estamos fazendo tudo no mesmo arquivo, eu não precisaria passar como parâ
 Agora para a lógica do controle do oponente, eu decidi deixar o jogo um pouco mais difícil que o normal, então estou comparando o centro Y do oponente e a coordenada y da bola, dessa forma fazemos o oponente só seguir a bola para onde ela for. Também precisamos adicionar o limite do oponente para não atravessar a tela. 
 
 ```python
-    def oponente_ia(self,ball):
+    def enemy_ia(self,ball):
         #lógica para seguir a bola
         if self.rect.centery < ball.rect.y:
             self.rect.centery += self.speed
@@ -389,7 +400,7 @@ Agora para a lógica do controle do oponente, eu decidi deixar o jogo um pouco m
             self.rect.bottom = size[1]
             
 ```
-Em seguida só declarar a função no nosso loop principal passando a bola com oparâmetro 
+Em seguida só declarar a função no nosso loop principal passando a bola com o parâmetro 
 
 ```python
     key = pygame.key.get_pressed()
@@ -400,18 +411,18 @@ Em seguida só declarar a função no nosso loop principal passando a bola com o
     else:
         player.stop()
     
-    #ai enemie
-    enemie.oponente_ia(ball)
+    #ia enemy
+    enemy.enemy_ia(ball)
     
     #update 
     player.update(ball)
-    enemie.update(ball)
+    enemy.update(ball)
     ball.update()
 ```
 Temos um jogo funcional agora :3
 # Direção aleatória
 
-Mas vamos fazer algumas pequenas modificações para adicionar algumas coisas, vamos começar com a direção da bola no início do jogo e implementar aleatoriedade. Para isso vamos importar a biblioteca random, a lógica e que quando o jogo inicia ele escolhe randomicamente a direção que a bola vai seguir, para o player ou para o inimigo. Pra isso so precisamos multiplicar a velocidade x e y pela escolha aleatória em -1,1 
+Mas vamos fazer algumas pequenas modificações para adicionar algumas coisas, vamos começar com a direção da bola no início do jogo e implementar aleatoriedade. Para isso vamos importar a biblioteca random, a lógica e que quando o jogo inicia ele escolhe randomicamente a direção que a bola vai seguir, para o player ou para o inimigo. Pra isso só precisamos multiplicar a velocidade x e y pela escolha aleatória em -1,1 
 
 ```python
     import random
@@ -436,12 +447,15 @@ Para o sistema de pontos vamos entender a regra do jogo de novo, caso a bola pas
             ...inits anteriores...
             self.add_score = True
             self.done = False
-    def score(self,player, enemie):
+    def score(self,player, enemy):
         if self.add_score:
+            #se a bola passar o lado do jogador, ponto do adversario
             if self.rect.left <= 0 - self.rect.width:
-                enemie.score += 10
+                enemy.score += 10
                 self.add_score = False
                 self.done = True
+
+            #se a bola passar o lado do adversario, ponto do jogador
             if self.rect.right > 600 + self.rect.width:
                 player.score += 10
                 self.add_score = False
@@ -450,7 +464,7 @@ Para o sistema de pontos vamos entender a regra do jogo de novo, caso a bola pas
     
 ```
 
-Adicionei um booleano, add_score, que ficaraá responsável para que o score seja adicionado apenas uma vez, como estamos chamando ele na função update e caso não tivesse essa variável o contador de pontos iria a loucura. 
+Adicionei um booleano, add_score, que ficará responsável para que o score seja adicionado apenas uma vez, como estamos chamando ele na função update e caso não tivesse essa variável o contador de pontos iria a loucura. 
 Adicionei a variável done que é um booleano, ele será o controle que temos para dizer quando o jogo acabou, no caso toda vez que um ponto e marcado o jogo é reiniciado.
 Depois disso só precisamos adicionar a função score no nosso loop principal passando como parâmetro o objeto do jogador e do inimigo
 
@@ -464,14 +478,14 @@ Depois disso só precisamos adicionar a função score no nosso loop principal p
         player.stop()
     
     #adiciona score quando houver ponto
-    ball.score(player, enemie)
+    ball.score(player, enemy)
     
-    #ai enemie
-    enemie.oponente_ia(ball)
+    #ai enemy
+    enemy.enemy_ia(ball)
     
     #update 
     player.update(ball)
-    enemie.update(ball)
+    enemy.update(ball)
     ball.update()
 
 ```
@@ -513,17 +527,17 @@ Caso o done retorne um true, ele define a posição inicial de volta para o cent
     else:
         player.stop()
     
-    #ai enemie
-    enemie.oponente_ia(ball)
+    #ai enemy
+    enemy.enemy_ia(ball)
     
     #update passando a bola como parâmetro para inimigo e o personagem
     player.update(ball)
-    enemie.update(ball)
+    enemy.update(ball)
     ball.update()
 
     #draw
     player.draw()
-    enemie.draw()
+    enemy.draw()
     ball.draw()    
 
     #reset game
@@ -568,22 +582,22 @@ Depois disso vamos adicionar o display score do player e do adversário no loop 
     else:
         player.stop()
     
-    #ai enemie
-    enemie.oponente_ia(ball)
+    #ai enemy
+    enemy.enemy_ia(ball)
     
-    #mostrando o score
+    #mostrando o score passando a posição do placar
     player.display_score(20,20)
-    enemie.display_score(size[1] - 100, 20)
+    enemy.display_score(size[1] - 100, 20)
     
 
     #update passando a bola como parâmetro para inimigo e o personagem
     player.update(ball)
-    enemie.update(ball)
+    enemy.update(ball)
     ball.update()
 
     #draw
     player.draw()
-    enemie.draw()
+    enemy.draw()
     ball.draw()    
 
     #reset game
